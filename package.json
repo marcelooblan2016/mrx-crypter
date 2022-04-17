@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "cryptr": "^6.0.2",
+    "qrcode": "^1.5.0",
+    "readline-sync": "^1.4.10",
+    "ts-node": "^10.7.0"
+  },
+  "scripts": {
+    "start": "tsc",
+    "watch": "tsc -w"
+  }
+}
