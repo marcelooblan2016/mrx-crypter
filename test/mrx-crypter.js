@@ -17,4 +17,6 @@ const readlineSync = require('readline-sync');
      * >>>>>>>>> decrypt decoded string with passphrase1
      * >>>>>>>>>>>>> base64decode
      */
+
+    // mrxCrypterDecryption.decryptNow({encryptedContent: null});
 })();

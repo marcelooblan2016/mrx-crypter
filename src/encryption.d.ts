@@ -4,7 +4,12 @@ declare global {
     namespace EncryptionNS {
         
         interface encryptionInterface {
-            encryptNow(parameters: encryptNowParameters): boolean
+            encryptNow(parameters: encryptNowParameters): string | boolean
+            saveFile(encryptedString: string): boolean
+            layer1Encryption(content: string): string
+            base64Content(content: string): string
+            askEncryptedString(): string
+            askPassPhrase(): string
         }
     
         interface encryptNowParameters {

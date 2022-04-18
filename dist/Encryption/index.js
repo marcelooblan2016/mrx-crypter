@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const readline_sync_1 = __importDefault(require("readline-sync"));
 const cryptr_1 = __importDefault(require("cryptr"));
 const qrcode_1 = __importDefault(require("qrcode"));
+const constants_1 = __importDefault(require("../constants"));
 class Encryption {
     constructor(options) { }
     /*
@@ -16,32 +17,52 @@ class Encryption {
      * @returns <boolean>
      */
     encryptNow(parameters) {
-        let content = parameters.content;
-        if (content == null) {
-            content = readline_sync_1.default.question('Type the string to be encrypted:');
+        try {
+            let content = parameters.content;
+            // ask user if content is not provided
+            if (content == null) {
+                content = this.askEncryptedString();
+            }
+            // ask passphrase
+            let passPhrase = this.askPassPhrase();
+            // base64 encoding
+            let base64Content = this.base64Content(content);
+            // apply layer1 encryption
+            let encryptedLayer1Content = this.layer1Encryption(base64Content);
+            // user encryption with passphrase
+            const cryptr = new cryptr_1.default(passPhrase);
+            const encryptedString = cryptr.encrypt(encryptedLayer1Content);
+            console.log(`Encrypted String: ${encryptedString}`);
+            // qr saved to file
+            this.saveFile(encryptedString);
+            return true;
         }
-        let base64Content = Buffer.from(content).toString('base64');
-        let passPhrase = readline_sync_1.default.question('Passphrase: ', {
+        catch (error) {
+            return false;
+        }
+    }
+    saveFile(encryptedString) {
+        let fileName = 'encrypted.png';
+        qrcode_1.default.toFile(fileName, encryptedString, {}, function (err) { if (err)
+            throw err; });
+        console.log(`file image saved into: ${fileName}`);
+        return true;
+    }
+    layer1Encryption(content) {
+        let cryptrLayer1 = new cryptr_1.default(constants_1.default.mrx_crypter);
+        return cryptrLayer1.encrypt(content);
+    }
+    base64Content(content) {
+        return Buffer.from(content).toString('base64');
+    }
+    askEncryptedString() {
+        return readline_sync_1.default.question('Type the string to be encrypted:');
+    }
+    askPassPhrase() {
+        return readline_sync_1.default.question('Passphrase: ', {
             hideEchoBack: true,
             mask: '*'
         });
-        // console.log(Buffer.from(base64Content, 'base64').toString('ascii'))
-        // console.log(base64Content);
-        // console.log(passPhrase);
-        const cryptr = new cryptr_1.default(passPhrase);
-        const encryptedString = cryptr.encrypt(content);
-        // console.log(encryptedString);
-        // let decryptedString = cryptr.decrypt(encryptedString);
-        // console.log(decryptedString);
-        let segs = [
-            { data: 'ABCDEFG', mode: 'alphanumeric' },
-            { data: '0123456', mode: 'numeric' }
-        ];
-        qrcode_1.default.toFile('encrypted.png', encryptedString, {}, function (err) { if (err)
-            throw err; });
-        // let decryptedString = cryptr.decrypt(qrCodeString);
-        // console.log(decryptedString);
-        return true;
     }
 }
 exports.default = new Encryption;
