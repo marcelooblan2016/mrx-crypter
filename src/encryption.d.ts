@@ -8,7 +8,7 @@ declare global {
             saveFile(encryptedString: string): boolean
             layer1Encryption(content: string): string
             base64Content(content: string): string
-            askEncryptedString(): string
+            askString(): string
             askPassPhrase(): string
         }
     

@@ -18,7 +18,7 @@ class Encryption implements EncryptionNS.encryptionInterface  {
             let content = parameters.content;
             // ask user if content is not provided
             if (content == null) {
-                content = this.askEncryptedString();
+                content = this.askString();
             }
             // ask passphrase
             let passPhrase: string = this.askPassPhrase();
@@ -37,7 +37,11 @@ class Encryption implements EncryptionNS.encryptionInterface  {
             return false;
         }
     }
-
+    /*
+     * generate qr & save it as png file
+     * @params: {encryptedString: *}
+     * @returns <boolean>
+     */
     public saveFile(encryptedString: string): boolean
     {
         let fileName = 'encrypted.png';
@@ -50,23 +54,37 @@ class Encryption implements EncryptionNS.encryptionInterface  {
         console.log(`file image saved into: ${fileName}`);
         return true;
     }
-
+    /*
+     * initial encryption
+     * @params: {content: *}
+     * @returns <string>
+     */
     public layer1Encryption(content: string): string
     {
         let cryptrLayer1 = new Cryptr(C.mrx_crypter);
         return cryptrLayer1.encrypt(content);
     }
-
+    /*
+     * base64 encoding
+     * @params: {content: *}
+     * @returns <string>
+     */
     public base64Content(content: string): string
     {
         return Buffer.from(content!).toString('base64');
     }
-
-    public askEncryptedString(): string
+    /*
+     * ask the user to input the string
+     * @returns <string>
+     */
+    public askString(): string
     {
         return readlineSync.question('Type the string to be encrypted:');
     }
-
+    /*
+     * ask the user to input the passphrase
+     * @returns <string>
+     */
     public askPassPhrase(): string
     {
         return readlineSync.question('Passphrase: ', {

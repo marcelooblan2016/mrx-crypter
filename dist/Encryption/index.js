@@ -21,7 +21,7 @@ class Encryption {
             let content = parameters.content;
             // ask user if content is not provided
             if (content == null) {
-                content = this.askEncryptedString();
+                content = this.askString();
             }
             // ask passphrase
             let passPhrase = this.askPassPhrase();
@@ -41,6 +41,11 @@ class Encryption {
             return false;
         }
     }
+    /*
+     * generate qr & save it as png file
+     * @params: {encryptedString: *}
+     * @returns <boolean>
+     */
     saveFile(encryptedString) {
         let fileName = 'encrypted.png';
         qrcode_1.default.toFile(fileName, encryptedString, {}, function (err) { if (err)
@@ -48,16 +53,34 @@ class Encryption {
         console.log(`file image saved into: ${fileName}`);
         return true;
     }
+    /*
+     * initial encryption
+     * @params: {content: *}
+     * @returns <string>
+     */
     layer1Encryption(content) {
         let cryptrLayer1 = new cryptr_1.default(constants_1.default.mrx_crypter);
         return cryptrLayer1.encrypt(content);
     }
+    /*
+     * base64 encoding
+     * @params: {content: *}
+     * @returns <string>
+     */
     base64Content(content) {
         return Buffer.from(content).toString('base64');
     }
-    askEncryptedString() {
+    /*
+     * ask the user to input the string
+     * @returns <string>
+     */
+    askString() {
         return readline_sync_1.default.question('Type the string to be encrypted:');
     }
+    /*
+     * ask the user to input the passphrase
+     * @returns <string>
+     */
     askPassPhrase() {
         return readline_sync_1.default.question('Passphrase: ', {
             hideEchoBack: true,
