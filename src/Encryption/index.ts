@@ -2,6 +2,7 @@
 import readlineSync from 'readline-sync';
 import Cryptr from 'cryptr'
 import qrcode from 'qrcode'
+import C from '../constants';
 
 class Encryption implements EncryptionNS.encryptionInterface  {
     constructor(options? : any) {}
@@ -12,41 +13,84 @@ class Encryption implements EncryptionNS.encryptionInterface  {
      * @params: {content: *}
      * @returns <boolean>
      */
-    public encryptNow(parameters: EncryptionNS.encryptNowParameters): boolean {
-        let content = parameters.content;
-        if (content == null) {
-            content = readlineSync.question('Type the string to be encrypted:');
+    public encryptNow(parameters: EncryptionNS.encryptNowParameters): string | boolean {
+        try {
+            let content = parameters.content;
+            // ask user if content is not provided
+            if (content == null) {
+                content = this.askString();
+            }
+            // ask passphrase
+            let passPhrase: string = this.askPassPhrase();
+            // base64 encoding
+            let base64Content: string = this.base64Content(content!);
+            // apply layer1 encryption
+            let encryptedLayer1Content: string = this.layer1Encryption(base64Content);
+            // user encryption with passphrase
+            const cryptr = new Cryptr(passPhrase);
+            const encryptedString = cryptr.encrypt(encryptedLayer1Content);
+            console.log(`Encrypted String: ${encryptedString}`);
+            // qr saved to file
+            this.saveFile(encryptedString);
+            return true;
+        } catch (error) {
+            return false;
         }
-        let base64Content = Buffer.from(content!).toString('base64');
-        let passPhrase: string = readlineSync.question('Passphrase: ', {
-            hideEchoBack: true,
-            mask: '*'
-        });
-        // console.log(Buffer.from(base64Content, 'base64').toString('ascii'))
-        // console.log(base64Content);
-        // console.log(passPhrase);
-        const cryptr = new Cryptr(passPhrase);
-        const encryptedString = cryptr.encrypt(content);
-        // console.log(encryptedString);
-        // let decryptedString = cryptr.decrypt(encryptedString);
-        // console.log(decryptedString);
-
-        let segs = [
-            { data: 'ABCDEFG', mode: 'alphanumeric' },
-            { data: '0123456', mode: 'numeric' }
-        ]
-        
+    }
+    /*
+     * generate qr & save it as png file
+     * @params: {encryptedString: *}
+     * @returns <boolean>
+     */
+    public saveFile(encryptedString: string): boolean
+    {
+        let fileName = 'encrypted.png';
         qrcode.toFile(
-            'encrypted.png', 
+            fileName, 
             encryptedString,
             {},
             function (err: any) {if (err) throw err;}
         );
-
-        // let decryptedString = cryptr.decrypt(qrCodeString);
-        // console.log(decryptedString);
-
+        console.log(`file image saved into: ${fileName}`);
         return true;
+    }
+    /*
+     * initial encryption
+     * @params: {content: *}
+     * @returns <string>
+     */
+    public layer1Encryption(content: string): string
+    {
+        let cryptrLayer1 = new Cryptr(C.mrx_crypter);
+        return cryptrLayer1.encrypt(content);
+    }
+    /*
+     * base64 encoding
+     * @params: {content: *}
+     * @returns <string>
+     */
+    public base64Content(content: string): string
+    {
+        return Buffer.from(content!).toString('base64');
+    }
+    /*
+     * ask the user to input the string
+     * @returns <string>
+     */
+    public askString(): string
+    {
+        return readlineSync.question('Type the string to be encrypted:');
+    }
+    /*
+     * ask the user to input the passphrase
+     * @returns <string>
+     */
+    public askPassPhrase(): string
+    {
+        return readlineSync.question('Passphrase: ', {
+            hideEchoBack: true,
+            mask: '*'
+        });
     }
 }
 

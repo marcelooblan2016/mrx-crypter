@@ -9,7 +9,7 @@ const readlineSync = require('readline-sync');
      * >>>>> encrypt with passphrase1
      * >>>>>>>>> convert into qr image
      */
-    mrxCrypterEncryption.encryptNow({content: null});
+    // mrxCrypterEncryption.encryptNow({content: null});
 
     /*
      * Decryption
@@ -17,4 +17,6 @@ const readlineSync = require('readline-sync');
      * >>>>>>>>> decrypt decoded string with passphrase1
      * >>>>>>>>>>>>> base64decode
      */
+
+    mrxCrypterDecryption.decryptNow({encryptedContent: null});
 })();

@@ -5,6 +5,9 @@ declare global {
 
         interface decryptionInterface {
             decryptNow(parameters: decryptNowParameters): string | boolean
+            layer1Decryption(content: string): string
+            askEncryptedString(): string
+            askPassPhrase(): string
         }
     
         interface decryptNowParameters {
