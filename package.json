@@ -1,7 +1,7 @@
 {
   "name": "mrx-crypter",
   "description": "A tool that helps encrypts/decrypts(passphrase required) data with precision and generate a qr code image",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/index.js",
   "repository": {
     "type": "git",
