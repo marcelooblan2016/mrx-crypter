@@ -1,4 +1,18 @@
 {
+  "name": "mrx-crypter",
+  "description": "A tool that helps encrypts/decrypts(passphrase required) data with precision and generate a qr code image",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcelooblan2016/mrx-crypter.git"
+  },
+  "author": "marx",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcelooblan2016/mrx-crypter.git/issues"
+  },
+  "homepage": "https://github.com/marcelooblan2016/mrx-crypter.git#readme",
   "devDependencies": {
     "typescript": "^4.6.3"
   },
